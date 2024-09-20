@@ -1,0 +1,145 @@
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joke Fetcher</title>
+    <link rel="stylesheet" href="./main.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+ <body>
+
+    <header>
+        <div class="logo">
+            <span>Joke Fetcher</span>
+        </div>
+    </header>
+
+    <aside>
+        <!-- this is where i will list the categories of the memes -->
+        <div class="categories-section">
+            <ul>
+                <span class="categories-section-header">Categories:</span>
+                <!-- Any, Misc, Programming, Dark, Pun, Spooky, Christmas -->
+                <li>
+                    <input type="radio" name="categories-choice" value="any" id="category-any">
+                    <label for="Any">Any</label>
+                </li>
+
+                <li>
+                    <input type="radio" name="categories-choice" value="custom" id="category-custom">
+                    <label for="custom">Custom</label>
+                </li>
+                
+                <li>
+                    <input type="checkbox" name="categories-option" value="misc">
+                    <label for="Misc">Misc</label>
+                </li>
+                <li>
+                    <input type="checkbox" name="categories-option" value="programming">
+                    <label for="Programming">Programming</label>
+                </li>
+                <li>
+                    <input type="checkbox" name="categories-option" value="dark">
+                    <label for="Dark">Dark</label>
+                </li>
+                <li>
+                    <input type="checkbox" name="categories-option" value="pun">
+                    <label for="Pun">Pun</label>
+                </li>
+                <li>
+                    <input type="checkbox" name="categories-option" value="spooky">
+                    <label for="Spooky">Spooky</label>
+                </li>
+                <li>
+                    <input type="checkbox" name="categories-option" value="christmas">
+                    <label for="Christmas">Christmas</label>
+                </li>
+                <span class="categories-section-header">Flags to blacklist:</span>
+                <li>
+                    <input type="checkbox" value="nsfw">
+                    <label for="nsfw">NSFW</label>
+                </li>
+                <li>
+                    <input type="checkbox" value="religious">
+                    <label for="religious">Religious</label>
+                </li>
+                <li>
+                    <input type="checkbox" value="political">
+                    <label for="political">Political</label>
+                </li>
+                <li>
+                    <input type="checkbox" value="racist">
+                    <label for="racist">Racist</label>
+                </li>
+                <li>
+                    <input type="checkbox" value="sexist">
+                    <label for="sexist">Sexist</label>
+                </li>
+                <li>
+                    <input type="checkbox" value="explicit">
+                    <label for="explicit">Explicit</label>
+                </li>
+                <span class="categories-section-header">Safety Measure:</span>
+                <li>
+                    <input type="checkbox" value="safe">
+                    <label for="safe">Safe</label>
+                </li>
+            </ul>
+            
+        </div>
+    </aside>
+
+    <main>
+        <div class="hero-section">
+            <div class="guidance">
+                Content will be generated when you select a category and hit the submit button. By default, a random joke type will be displayed, which may include NSFW or explicit content (please note that I'm not responsible for this content). Check the safebox to hide explicit content, and use the categories section to filter the response.
+            </div>
+            
+        </div>
+        
+        <div class="content-container">
+            <% if(locals.delivery) {%>
+            <h1 class="setup">
+                <%= setup %>
+            </h1>
+
+            <h2 class="delivery">
+                <%= delivery %>
+            </h2>
+            <% } else { %>
+                <h1>
+                    <%= setup %>
+                </h1>
+            <% } %>
+        </div>
+
+
+
+        <button id="refresh-btn">Refresh</button>
+
+        <article>
+            <ul>
+                <h3>Summary:</h3>
+                <p>All jokes on this site are fetched via the <a href="https://sv443.net/jokeapi/v2/">JokeAPI</a>, which generates two types of jokes: 'single' and 'twopart'.</p>
+                <li><h4>single</h4>
+                    <p>This type of jokes are not clickables, meaning it will not change the content when you click on them.</p>
+                </li>
+                <li><h4>twopart</h4>
+                    <p>This type of jokes are clickables, meaning the first content that will be displyed will always be the setup or the statement of the joke and after clicking this text, the 
+                    punchline or the delivery of that joke will be displayed.
+                    </p>
+                </li>
+            </ul>
+        </article>
+    </main>
+
+    <footer>
+        &copy; <%= new Date().getFullYear() %> Arjun Banerjee &SmallCircle; Created with the JokeAPI &SmallCircle;
+    </footer>
+
+ </body>
+
+ <script src="script.js"></script>
+
+ </html>
