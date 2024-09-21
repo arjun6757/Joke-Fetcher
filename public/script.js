@@ -8,9 +8,25 @@ $(document).ready(function () {
     // initially it will check
     updateCategoryState();
     ifSafeThenDisableFlagOptions();
-    
+    let blackLists = '';
+
     $('input[type="checkbox"][value="safe"]').off('change').on('change', function() {
         ifSafeThenDisableFlagOptions();
+    });
+
+    $('input[type="checkbox"][name="flags"]').off('change').on('change', function() {
+        const blackListArray = [];
+        $('input[name="flags"]:checked').each(function(){
+            blackListArray.push($(this).val());
+        })
+
+        if(blackListArray.length > 0) {
+            blackLists = '?blacklistFlags='+ blackListArray.join(',');
+            fetchJokes(selectedParameters);
+            sendtoServer();
+        } else {
+            blackLists = '';
+        }
     });
 
     function ifSafeThenDisableFlagOptions() {
@@ -51,7 +67,9 @@ $(document).ready(function () {
     
     async function fetchJokes(selectedParameters) {
         try {
-            const response = await axios.get(`https://v2.jokeapi.dev/joke/${selectedParameters}`);
+            console.log('blacklists: '+blackLists);
+            selectedParameters = selectedParameters.length > 0 ? selectedParameters : 'any';
+            const response = await axios.get(`https://v2.jokeapi.dev/joke/${selectedParameters}${blackLists}`);
             const result = response.data;
             //now i need to pass this data to the container
             console.log('we are in the async function\nresponse: ', result);
@@ -131,4 +149,17 @@ $(document).ready(function () {
             $(".content-container").append(setup);
         }
     }
+
+    async function sendtoServer(){
+        try {
+            const response = await axios.patch(`/blacklistFlags`, {
+                blackLists
+            });
+            const result = response.data;
+            console.log(`data sent successfully to the server: ${result}`);
+        } catch(error) {
+            console.error("error sending data: ", error);
+        }
+    }
+
 });
