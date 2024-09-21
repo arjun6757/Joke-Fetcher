@@ -6,6 +6,7 @@
     <title>Joke Fetcher</title>
     <link rel="stylesheet" href="./main.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
  <body>
 
@@ -57,27 +58,27 @@
                 </li>
                 <span class="categories-section-header">Flags to blacklist:</span>
                 <li>
-                    <input type="checkbox" value="nsfw">
+                    <input type="checkbox" name="flags" value="nsfw">
                     <label for="nsfw">NSFW</label>
                 </li>
                 <li>
-                    <input type="checkbox" value="religious">
+                    <input type="checkbox" name="flags" value="religious">
                     <label for="religious">Religious</label>
                 </li>
                 <li>
-                    <input type="checkbox" value="political">
+                    <input type="checkbox" name="flags" value="political">
                     <label for="political">Political</label>
                 </li>
                 <li>
-                    <input type="checkbox" value="racist">
+                    <input type="checkbox" name="flags" value="racist">
                     <label for="racist">Racist</label>
                 </li>
                 <li>
-                    <input type="checkbox" value="sexist">
+                    <input type="checkbox" name="flags" value="sexist">
                     <label for="sexist">Sexist</label>
                 </li>
                 <li>
-                    <input type="checkbox" value="explicit">
+                    <input type="checkbox" name="flags" value="explicit">
                     <label for="explicit">Explicit</label>
                 </li>
                 <span class="categories-section-header">Safety Measure:</span>
@@ -140,6 +141,6 @@
 
  </body>
 
- <script src="script.js"></script>
+ <script type="module" src="script.js"></script>
 
  </html>

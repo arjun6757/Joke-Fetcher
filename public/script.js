@@ -1,45 +1,72 @@
 $(document).ready(function () {
-
     // by default the any value should be selected
     $('input[name="categories-choice"][value="any"]').prop('checked', true);
     // by default the safe value should be selected
     $('input[type="checkbox"][value="safe"]').prop('checked', true);
 
+    let selectedParameters = '';
     // initially it will check
     updateCategoryState();
+    ifSafeThenDisableFlagOptions();
+    
+    $('input[type="checkbox"][value="safe"]').off('change').on('change', function() {
+        ifSafeThenDisableFlagOptions();
+    });
+
+    function ifSafeThenDisableFlagOptions() {
+        const isSafe = $('input[type="checkbox"][value="safe"]').is(':checked');
+
+        if(isSafe) {
+            $('input[name="flags"]').prop('checked', false).prop('disabled', true);
+        }
+        else {
+            $('input[name="flags"]').prop('disabled', false);
+        }
+    }
+
+    $('input[name="categories-option"]').off('change').on('change', function () {
+        checkOptions();
+        });
 
     function checkOptions() {
-        // Attach the event handler once to avoid multiple bindings
-        $('input[name="categories-option"]').off('change').on('change', function () {
-            // Create a new array to collect selected values
-            const selectedCategories = []; 
-            
-            // Iterate through each checked checkbox and collect their values
-            $('input[name="categories-option"]:checked').each(function () {
-                selectedCategories.push($(this).val());
-            });
-            
-            // Join the selected values into a comma-separated string
-            const selectedValue = selectedCategories.join(',');
-            console.log(selectedValue);
-            
-            // Send the selected values to the server
-            fetch('/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ selectedValue: selectedValue })
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Server response: ', data);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+        console.log('entering checkOptions');
+        const selectedCategories = [];
+        $('input[name="categories-option"]:checked').each(function() {
+            console.log(`selected category: ${$(this).val()}
+            \npushing this value to the selectedCategories array`);
+            selectedCategories.push($(this).val());
         });
-    }    
+
+        if(selectedCategories.length > 0) {
+            selectedParameters = selectedCategories.join(',');
+        } else {
+            // if there is nothing in there
+            selectedCategories.push('any');
+            selectedParameters = selectedCategories.join('');
+        }
+
+        console.log(`selected paramters or categories: ${selectedParameters}`);
+        fetchJokes(selectedParameters);
+    }   
+    
+    async function fetchJokes(selectedParameters) {
+        try {
+            const response = await axios.get(`https://v2.jokeapi.dev/joke/${selectedParameters}`);
+            const result = response.data;
+            //now i need to pass this data to the container
+            console.log('we are in the async function\nresponse: ', result);
+            updateContainer(result);
+        } catch (error) {
+            console.error('error: ', error);
+        }
+    } 
+
+    $('input[name="categories-choice"]').on('change', function () {
+        updateCategoryState();
+        $('input[name="categories-option"]').off('change').on('change', function () {
+        checkOptions();
+        });
+    });
 
     function updateCategoryState() {
         const isAnyChecked = $('#category-any').is(':checked');
@@ -58,14 +85,6 @@ $(document).ready(function () {
         }
     }
 
-    $('input[name="categories-choice"]').on('change', function () {
-        updateCategoryState();
-        $('input[name="categories-option"]').off('change').on('change', function () {
-        checkOptions();
-        });
-        // so that whenver i click on any choice base button on category section it calls this function
-    });
-
     $(".content-container").on('click', '.setup', function () {
         $(".delivery").toggle();
     });
@@ -75,7 +94,14 @@ $(document).ready(function () {
     });
 
     $("#refresh-btn").on('click', function () {
-        fetch('/json', {
+        if(selectedParameters.length > 0) {
+            // this section will run when user selected and then marked off all the options
+            console.log('selectedParameters.length: ', selectedParameters.length);
+            console.log(`we are on the if sections of refresh button on click event: ${selectedParameters}`);
+            fetchJokes(selectedParameters);
+        } else {
+            console.log(`we are on the else sections of the refresh button on click event= we dont actually need selectedParamters here as im generating any category content from the server :)`);
+            fetch('/json', {
             method: 'GET',
         })
             .then(response => response.json())
@@ -85,6 +111,9 @@ $(document).ready(function () {
             .catch(error => {
                 console.log('Error: ', error);
             });
+
+        }
+
     });
 
     function updateContainer(Jokes) {

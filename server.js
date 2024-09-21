@@ -9,7 +9,7 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.json());
 
-const URL = 'https://v2.jokeapi.dev/joke/';
+const URL = 'https://v2.jokeapi.dev/joke';
 let category = "Any";
 
 // the app is listening on
@@ -19,9 +19,10 @@ app.listen(PORT, () => {
 
 app.get('/', async (req, res) => {
     try {
-        const response = await axios.get(URL+category);
+        // so only the first time it will fetch the content from the server the rest will be fetched from the client side
+        const response = await axios.get(URL+'/'+category);
         const result = response.data;
-        console.log(result)
+        // console.log(result)
         if (result.type == 'twopart') {
             res.render('index.ejs', { setup: result.setup, delivery: result.delivery })
         }
@@ -34,16 +35,9 @@ app.get('/', async (req, res) => {
     }
 });
 
-
-// changing the category value
-app.post('/', (req, res) => {
-    category = req.body.selectedValue;
-    console.log('category is : ', category);
-});
-
 app.get('/json', async (req, res) => {
     try {
-        const response = await axios.get(URL+category);
+        const response = await axios.get(URL+'/'+category);
         const result = response.data;
         if(!result) {
             console.log('result is not send!');
