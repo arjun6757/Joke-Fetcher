@@ -1,18 +1,17 @@
 $(document).ready(function () {
     // by default the any value should be selected
     $('input[name="categories-choice"][value="any"]').prop('checked', true);
-    // by default the safe value should be selected
-    $('input[type="checkbox"][value="safe"]').prop('checked', true);
+
+    const safe_btn = $('input[type="submit"][value="Safe mode"]');
+
+    safe_btn.on('click', function() {
+        alert("You've clicked on safe, to return to normal choose custom and then select any of the categories")
+    })
 
     let selectedParameters = '';
     // initially it will check
     updateCategoryState();
-    ifSafeThenDisableFlagOptions();
     let blackLists = '';
-
-    $('input[type="checkbox"][value="safe"]').off('change').on('change', function() {
-        ifSafeThenDisableFlagOptions();
-    });
 
     $('input[type="checkbox"][name="flags"]').off('change').on('change', function() {
         const blackListArray = [];
@@ -28,17 +27,6 @@ $(document).ready(function () {
             blackLists = '';
         }
     });
-
-    function ifSafeThenDisableFlagOptions() {
-        const isSafe = $('input[type="checkbox"][value="safe"]').is(':checked');
-
-        if(isSafe) {
-            $('input[name="flags"]').prop('checked', false).prop('disabled', true);
-        }
-        else {
-            $('input[name="flags"]').prop('disabled', false);
-        }
-    }
 
     $('input[name="categories-option"]').off('change').on('change', function () {
         checkOptions();

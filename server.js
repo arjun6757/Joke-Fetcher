@@ -12,45 +12,23 @@ app.use(bodyParser.json());
 const URL = 'https://v2.jokeapi.dev/joke';
 let category = "Any";
 let blacklistFlags = '';
+let safeActive = false;
 
 // the app is listening on
 app.listen(PORT, () => {
     console.log(`server is running on port ${PORT}`);
 })
 
-// previous code :'(
-// app.get('/', async (req, res) => {
-//     try {
-//         let result;
-//         // so only the first time it will fetch the content from the server the rest will be fetched from the client side
-//         if (blacklistFlags.length > 0) {
-//             const response = await axios.get(`${URL}/${category}${blacklistFlags}`);
-//             result = response.data;
-//             // console.log(result)
-//         } else {
-//             const response = await axios.get(`${URL}/${category}`);
-//             result = response.data;
-//         }
-
-//         if (result.type == 'twopart') {
-//             res.render('index.ejs', { setup: result.setup, delivery: result.delivery })
-//         }
-//         else {
-//             res.render('index.ejs', { setup: result.joke, delivery: null })
-//         }
-
-//         // res.render('index.ejs', { setup: JSON.stringify(result.setup), delivery: JSON.stringify(result.delivery) })
-//     } catch (error) {
-//         console.error('error code: ', error.response);
-//     }
-// });
-
 app.get('/', async (req, res) => {
     try {
-        const url = blacklistFlags.length > 0 
+        let url = blacklistFlags.length > 0 
             ? `${URL}/${category}${blacklistFlags}` 
             : `${URL}/${category}`;
         
+            if(safeActive) {
+                url += '?safe-mode';
+            }
+
         const { data: result } = await axios.get(url);
 
         const setup = result.type === 'twopart' ? result.setup : result.joke;
@@ -65,16 +43,24 @@ app.get('/', async (req, res) => {
 
 app.get('/json', async (req, res) => {
     try {
-        const response = await axios.get(URL + '/' + category);
+        let url = `${URL}/${category}`;
+
+        if(safeActive) 
+            url += '?safe-mode';
+        
+        const response = await axios.get(url);
         const result = response.data;
         if (!result) {
             console.log('result is not send!');
         }
         console.log(result)
-        res.json(result);
+        if(result.error) {
+            res.json({setup: result.message, delivery: null});
+        } else {
+            res.json(result);
+        }
     } catch (error) {
-        console.error('error message: ', error.response);
-        res.status(500);
+        console.log(error.message);
     }
 });
 
@@ -84,3 +70,18 @@ app.patch('/blacklistFlags', (req, res) => {
     console.log(blacklistFlags);
 });
 
+app.get('/safe', async (req, res) => {
+    try {
+        safeActive = true;
+        const url = `${URL}/${category}?safe-mode`
+        const response = await axios.get(url);
+        const result = response.data;
+
+        const setup = result.type === 'twopart' ? result.setup : result.joke;
+        const delivery = result.type === 'twopart' ? result.delivery : null;
+
+        res.render('index.ejs', { setup, delivery });
+    } catch (err) {
+        console.error(err);
+    }
+})

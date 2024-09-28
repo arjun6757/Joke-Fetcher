@@ -82,10 +82,9 @@
                     <label for="explicit">Explicit</label>
                 </li>
                 <span class="categories-section-header">Safety Measure:</span>
-                <li>
-                    <input type="checkbox" value="safe">
-                    <label for="safe">Safe</label>
-                </li>
+                <form action="/safe">
+                    <input id="safe-btn" type="submit" value="Safe mode">
+                </form>
             </ul>
             
         </div>
@@ -141,6 +140,10 @@
 
  </body>
 
- <script type="module" src="script.js"></script>
+ <script type="module" src="script.js">
+    $('input[type="checkbox"][value="safe"]').off('change').on('change', function () {
+        alert('clicked on the safe button')
+    })
+ </script>
 
  </html>
