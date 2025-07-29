@@ -118,7 +118,7 @@ async function fetchJokes() {
         category = options.join(",");
     }
 
-    url = `http://localhost:3000/api/joke/${category}`;
+    url = `${api}/api/joke/${category}`;
 
     if (flags.length > 0) url += `?flags=${flags.join(",")}`;
 
