@@ -20,7 +20,7 @@ app.listen(PORT, () => {
 
 app.get('/', async (req, res) => {
     try {
-        res.render('index.ejs', { API: process.env.API_URL })
+        res.render('index.ejs', { API: process.env.API_URL ? process.env.API_URL : 'http://localhost:3000' })
     }
     catch (error) {
         res.status(error.status | 500).json({ message: error.message || "Error while loading ejs" })
