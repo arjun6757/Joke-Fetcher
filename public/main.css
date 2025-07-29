@@ -4,6 +4,11 @@
     font-family: Verdana, Geneva, Tahoma, sans-serif;
 }
 
+*:disabled {
+    background-color: dimgray;
+    color: #888;
+}
+
 body {
     background-color: #fff;
     color: blueviolet;
@@ -45,6 +50,9 @@ main {
 
 .categories-section {
     padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
 }
 
 .categories-section-header {
@@ -53,13 +61,16 @@ main {
 }
 
 input[type='submit'], button {
-    margin-top: 1rem;
     padding: 8px 15px;
     background-color: rgb(54, 131, 54);
     color: #fff;
     border: none;
     font-size: 14px;
     cursor: pointer;
+}
+
+#safe-btn {
+    transition: opacity 0.3s ease;
 }
 
 .guidance {
@@ -79,6 +90,12 @@ input[type='submit'], button {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    opacity: 100%;
+    transition: opacity 0.3s ease;
+}
+
+.loading {
+    opacity: 50%;
 }
 
 #refresh-btn {
